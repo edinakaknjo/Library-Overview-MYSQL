@@ -1,0 +1,107 @@
+CREATE DATABASE biblioteka_db;
+USE biblioteka_db;
+
+CREATE TABLE knjiga (
+    idknjiga INT AUTO_INCREMENT PRIMARY KEY,
+    naslov VARCHAR(255) NOT NULL,
+    autor VARCHAR(255) NOT NULL,
+    datumobjave INT
+);
+ALTER TABLE knjiga ADD COLUMN pozajmljena TINYINT(1) DEFAULT 0;
+
+CREATE TABLE clan (
+    idclan INT AUTO_INCREMENT PRIMARY KEY,
+    imeprezime VARCHAR(255) NOT NULL,
+    jmbg VARCHAR(13) UNIQUE NOT NULL
+);
+
+CREATE TABLE biblioteka (
+    idbiblioteka INT AUTO_INCREMENT PRIMARY KEY,
+    mjesto VARCHAR(255) NOT NULL,
+    brposlovnice INT NOT NULL
+);
+
+CREATE TABLE iznajmljivanje (
+    idiznajmljivanje INT AUTO_INCREMENT PRIMARY KEY,
+    idclan INT,
+    idknjiga INT,
+    datum_iznajmljivanja DATE NOT NULL,
+    datum_vracanja DATE NULL,
+    FOREIGN KEY (idclan) REFERENCES clan(idclan) ON DELETE CASCADE,
+    FOREIGN KEY (idknjiga) REFERENCES knjiga(idknjiga) ON DELETE CASCADE
+);
+
+CREATE TABLE knjiga_biblioteka (
+    idknjiga INT,
+    idbiblioteka INT,
+    PRIMARY KEY (idknjiga, idbiblioteka),
+    FOREIGN KEY (idknjiga) REFERENCES knjiga(idknjiga) ON DELETE CASCADE,
+    FOREIGN KEY (idbiblioteka) REFERENCES biblioteka(idbiblioteka) ON DELETE CASCADE
+);
+
+CREATE TABLE clan_biblioteka (
+    idclan INT,
+    idbiblioteka INT,
+    PRIMARY KEY (idclan, idbiblioteka),
+    FOREIGN KEY (idclan) REFERENCES clan(idclan) ON DELETE CASCADE,
+    FOREIGN KEY (idbiblioteka) REFERENCES biblioteka(idbiblioteka) ON DELETE CASCADE
+);
+
+INSERT INTO knjiga (naslov, autor, datumobjave, pozajmljena) VALUES
+('Na Drini ćuprija', 'Ivo Andrić', 1945, 0),
+('Travnička hronika', 'Ivo Andrić', 1945, 0),
+('Derviš i smrt', 'Meša Selimović', 1966, 1),
+('Tvrđava', 'Meša Selimović', 1970, 0),
+('Znakovi pored puta', 'Ivo Andrić', 1976, 0),
+('Prokleta avlija', 'Ivo Andrić', 1954, 1),
+('Koreni', 'Dobrica Ćosić', 1954, 0),
+('Bašta, pepeo', 'Danilo Kiš', 1965, 0),
+('Kiklop', 'Ranko Marinković', 1965, 0),
+('Zagreb 41', 'Pavao Pavličić', 2005, 1);
+
+SELECT * FROM knjiga;
+
+INSERT INTO biblioteka (mjesto, brposlovnice) VALUES
+('Sarajevo', 1),
+('Beograd', 2),
+('Zagreb', 3);
+
+select * from biblioteka
+
+INSERT INTO clan (imeprezime, jmbg) VALUES
+('Amar Kovačević', '1234567890123'),
+('Nikola Petrović', '2234567890123'),
+('Ivan Horvat', '3234567890123'),
+('Lejla Hadžić', '4234567890123'),
+('Marko Marić', '5234567890123');
+
+select * from clan
+
+INSERT INTO knjiga_biblioteka (idknjiga, idbiblioteka) VALUES
+(1, 1), (2, 1), (3, 1), 
+(4, 2), (5, 2), (6, 2), 
+(7, 3), (8, 3), (9, 3), (10, 3);
+
+select * from knjiga_biblioteka
+INSERT INTO clan_biblioteka (idclan, idbiblioteka) VALUES
+(1, 1), 
+(2, 2), 
+(3, 3), 
+(4, 1), 
+(5, 2); 
+
+INSERT INTO iznajmljivanje (idclan, idknjiga, datum_iznajmljivanja, datum_vracanja) VALUES
+(1, 3, '2024-02-01', NULL),
+(2, 6, '2024-01-15', '2024-02-05'), 
+(3, 10, '2024-02-07', NULL)
+
+SELECT * FROM clan;
+
+        SELECT 
+            i.idiznajmljivanje, i.datum_iznajmljivanja, i.datum_vracanja,
+            c.imeprezime AS iznajmio, c.jmbg
+        FROM iznajmljivanje i
+        JOIN clan c ON i.idclan = c.idclan
+        WHERE i.idknjiga = 6
+
+
