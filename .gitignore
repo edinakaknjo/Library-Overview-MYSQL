@@ -1,0 +1,4 @@
+node_modules/ 
+package-lock.json 
+library-backend/node_modules/ 
+library-frontend/node_modules/ 
